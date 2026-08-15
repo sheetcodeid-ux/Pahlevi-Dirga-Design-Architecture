@@ -1,0 +1,1424 @@
+<title>Studio OS Blueprint</title>
+
+<style>
+  :root {
+    --paper:      #F2F3F1;
+    --paper-2:    #FBFBFA;
+    --panel:      #FFFFFF;
+    --ink:        #16191A;
+    --ink-2:      #3D4446;
+    --ink-3:      #6B7476;
+    --rule:       #D3D7D3;
+    --rule-soft:  #E4E7E3;
+    --accent:     #2F6F6A;
+    --accent-sub: #E1EBE8;
+    --warn:       #B4573A;
+    --warn-sub:   #F6E6E0;
+    --ok:         #4F7A52;
+    --ok-sub:     #E4EDE3;
+    --caut:       #A87A22;
+    --caut-sub:   #F6EEDA;
+    --shadow:     0 1px 0 rgba(22,25,26,.04), 0 8px 24px -18px rgba(22,25,26,.5);
+
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 68ch;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #14171A;
+      --paper-2:    #191D20;
+      --panel:      #1B2023;
+      --ink:        #E8EAE7;
+      --ink-2:      #B3BAB8;
+      --ink-3:      #808A89;
+      --rule:       #2E3538;
+      --rule-soft:  #23292C;
+      --accent:     #6FB3AA;
+      --accent-sub: #1E2E2E;
+      --warn:       #DC8A6C;
+      --warn-sub:   #33221C;
+      --ok:         #8FB98F;
+      --ok-sub:     #1F2A20;
+      --caut:       #D3AC5B;
+      --caut-sub:   #2E2718;
+      --shadow:     0 1px 0 rgba(0,0,0,.3), 0 10px 28px -20px rgba(0,0,0,.9);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #14171A;
+    --paper-2:    #191D20;
+    --panel:      #1B2023;
+    --ink:        #E8EAE7;
+    --ink-2:      #B3BAB8;
+    --ink-3:      #808A89;
+    --rule:       #2E3538;
+    --rule-soft:  #23292C;
+    --accent:     #6FB3AA;
+    --accent-sub: #1E2E2E;
+    --warn:       #DC8A6C;
+    --warn-sub:   #33221C;
+    --ok:         #8FB98F;
+    --ok-sub:     #1F2A20;
+    --caut:       #D3AC5B;
+    --caut-sub:   #2E2718;
+    --shadow:     0 1px 0 rgba(0,0,0,.3), 0 10px 28px -20px rgba(0,0,0,.9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--gutter) 6rem;
+  }
+
+  /* ---------- title block ---------- */
+
+  .titleblock {
+    border-bottom: 2px solid var(--ink);
+    padding: clamp(2rem, 6vw, 4rem) 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 6.5vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  .lede {
+    max-width: var(--measure);
+    color: var(--ink-2);
+    font-size: 1.06rem;
+    margin: 0;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .meta > div {
+    background: var(--paper);
+    padding: .7rem .85rem;
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+  }
+  .meta dt, .meta .k {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .meta .v {
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* ---------- contents ---------- */
+
+  .toc {
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: .1rem 2rem;
+  }
+  .toc li { border-top: 1px solid var(--rule-soft); }
+  .toc a {
+    display: flex;
+    gap: .75rem;
+    align-items: baseline;
+    padding: .55rem 0;
+    text-decoration: none;
+    color: var(--ink-2);
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc .n { font-family: var(--mono); font-size: .72rem; color: var(--ink-3); }
+
+  /* ---------- sections ---------- */
+
+  section {
+    padding-top: clamp(3rem, 8vw, 5rem);
+    scroll-margin-top: 1rem;
+  }
+  .sec-head {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0 1rem;
+    align-items: start;
+    border-top: 1px solid var(--ink);
+    padding-top: 1rem;
+  }
+  .sec-head .num {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    color: var(--accent);
+    padding-top: .55rem;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 4vw, 2.25rem);
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .sec-head .sub {
+    grid-column: 2;
+    color: var(--ink-3);
+    font-size: .95rem;
+    margin: .4rem 0 0;
+    max-width: var(--measure);
+  }
+  .body-col {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+  .body-col > p, .body-col > ul, .body-col > ol { max-width: var(--measure); margin: 0; }
+  .body-col ul, .body-col ol { padding-left: 1.15rem; }
+  .body-col li { margin-bottom: .35rem; }
+
+  h3 {
+    font-family: var(--body);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 1.25rem 0 0;
+  }
+  h4 {
+    font-family: var(--mono);
+    font-size: .74rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: .5rem 0 0;
+  }
+
+  strong { font-weight: 650; }
+  code {
+    font-family: var(--mono);
+    font-size: .855em;
+    background: var(--rule-soft);
+    padding: .1em .34em;
+    border-radius: 2px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- tables ---------- */
+
+  .scroller {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 620px;
+    font-size: .875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    padding: .7rem .85rem;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+    background: var(--paper-2);
+  }
+  td {
+    padding: .62rem .85rem;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--ink); font-weight: 550; }
+  td code, th code { background: transparent; padding: 0; }
+  .num-col { text-align: right; }
+
+  /* ---------- chips ---------- */
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: .16rem .42rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .chip-f  { background: var(--accent-sub); color: var(--accent); border-color: var(--accent); }
+  .chip-r  { background: var(--caut-sub);   color: var(--caut);   border-color: var(--caut); }
+  .chip-rel{ background: var(--ok-sub);     color: var(--ok);     border-color: var(--ok); }
+  .chip-x  { background: var(--warn-sub);   color: var(--warn);   border-color: var(--warn); }
+  .chip-n  { background: var(--rule-soft);  color: var(--ink-3);  border-color: var(--rule); }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border-left: 3px solid var(--accent);
+    background: var(--panel);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    max-width: var(--measure);
+  }
+  .note.risk   { border-left-color: var(--warn); }
+  .note.good   { border-left-color: var(--ok); }
+  .note.caut   { border-left-color: var(--caut); }
+  .note .lbl {
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .note.risk .lbl { color: var(--warn); }
+  .note.good .lbl { color: var(--ok); }
+  .note.caut .lbl { color: var(--caut); }
+  .note p { margin: 0; font-size: .94rem; }
+  .note ul { margin: 0; padding-left: 1.1rem; font-size: .94rem; }
+  .note li { margin-bottom: .3rem; }
+
+  /* ---------- hub diagram ---------- */
+
+  .hub {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: .55rem;
+    margin: 0;
+  }
+  .node {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    padding: .7rem .8rem;
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+  }
+  .node .nm {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .05em;
+    font-weight: 600;
+  }
+  .node .dsc { font-size: .78rem; color: var(--ink-3); line-height: 1.4; }
+  .node.center {
+    grid-column: 1 / -1;
+    border: 2px solid var(--accent);
+    background: var(--accent-sub);
+  }
+  .node.center .nm { color: var(--accent); font-size: .85rem; }
+  .node.center .dsc { color: var(--ink-2); }
+
+  /* ---------- flow ---------- */
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .flow li {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    padding: .3rem .5rem;
+    margin: 0;
+  }
+  .flow li.pay { border-color: var(--accent); color: var(--accent); }
+  .flow li.gate { border-color: var(--caut); color: var(--caut); }
+  .flow .arw { border: none; background: none; color: var(--ink-3); padding: 0 .05rem; }
+
+  /* ---------- portal mock ---------- */
+
+  .mock {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    max-width: 380px;
+    font-size: .82rem;
+    overflow: hidden;
+  }
+  .mock .mhead {
+    padding: 1.1rem 1.15rem .9rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .mock .studio {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .mock .pname {
+    font-family: var(--display);
+    font-size: 1.32rem;
+    line-height: 1.15;
+    margin-top: .3rem;
+  }
+  .mock .mrow {
+    padding: .85rem 1.15rem;
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
+  .mock .mrow:last-child { border-bottom: none; }
+  .mock .k {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .bar {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: -.04em;
+    color: var(--accent);
+  }
+  .tl { list-style: none; padding: 0; margin: 0; font-family: var(--mono); font-size: .72rem; }
+  .tl li { display: flex; gap: .5rem; padding: .12rem 0; color: var(--ink-3); }
+  .tl li.done { color: var(--ok); }
+  .tl li.now  { color: var(--accent); font-weight: 600; }
+  .pay-line { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .74rem; }
+  .pay-line .paid { color: var(--ok); }
+  .pay-line .pend { color: var(--ink-3); }
+
+  /* ---------- formula block ---------- */
+
+  .fml {
+    font-family: var(--mono);
+    font-size: .78rem;
+    line-height: 1.6;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: .7rem .85rem;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--ink);
+  }
+
+  /* ---------- checklist ---------- */
+
+  .check { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .4rem; }
+  .check li {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: .5rem;
+    font-size: .94rem;
+    align-items: baseline;
+  }
+  .check .bx { font-family: var(--mono); font-size: .8rem; color: var(--ink-3); }
+
+  /* ---------- phase list ---------- */
+
+  .phases { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .phase {
+    background: var(--panel);
+    padding: .85rem 1rem;
+    display: grid;
+    grid-template-columns: 3.4rem 1fr auto;
+    gap: .9rem;
+    align-items: baseline;
+  }
+  .phase .pn { font-family: var(--mono); font-size: .68rem; color: var(--accent); letter-spacing: .08em; }
+  .phase .pt { font-size: .93rem; }
+  .phase .pt small { display: block; color: var(--ink-3); font-size: .82rem; margin-top: .12rem; }
+  .phase .pd { font-family: var(--mono); font-size: .66rem; color: var(--ink-3); white-space: nowrap; }
+
+  hr.rule { border: none; border-top: 1px solid var(--rule-soft); margin: 0; }
+
+  footer {
+    margin-top: 5rem;
+    border-top: 2px solid var(--ink);
+    padding-top: 1.25rem;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .06em;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.5rem;
+  }
+
+  a:focus-visible, .toc a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 620px) {
+    .sec-head { grid-template-columns: 1fr; }
+    .sec-head .num { padding-top: 0; }
+    .sec-head .sub { grid-column: 1; }
+    .phase { grid-template-columns: 1fr; gap: .2rem; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <p class="eyebrow">Tahap 1 &amp; 2 — Audit dan Rancangan</p>
+    <h1>Sistem Operasional Studio Arsitektur di Notion</h1>
+    <p class="lede">Dokumen ini menyelesaikan dua tahap pertama: hasil audit workspace Notion apa adanya, dan rancangan lengkap sistem yang akan dibangun. Belum ada satu pun perubahan yang dilakukan di Notion. Pembangunan menunggu konfirmasi Anda di Bagian&nbsp;09.</p>
+    <div class="meta">
+      <div><span class="k">Workspace</span><span class="v">Pahlevi Dirga Design Architecture’s Space</span></div>
+      <div><span class="k">Akun terhubung</span><span class="v">pahlevidirgadesign@gmail.com</span></div>
+      <div><span class="k">Teamspace</span><span class="v">Team HQ — Owner</span></div>
+      <div><span class="k">Tanggal audit</span><span class="v">15 Agustus 2026</span></div>
+      <div><span class="k">Status</span><span class="v" style="color:var(--caut)">Menunggu Konfirmasi</span></div>
+      <div><span class="k">Perubahan dilakukan</span><span class="v" style="color:var(--ok)">Nihil — read only</span></div>
+    </div>
+  </header>
+
+  <nav aria-label="Daftar isi">
+    <ol class="toc">
+      <li><a href="#s01"><span class="n">01</span> Hasil Audit</a></li>
+      <li><a href="#s02"><span class="n">02</span> Keputusan Pakai Ulang</a></li>
+      <li><a href="#s03"><span class="n">03</span> Peta Sistem</a></li>
+      <li><a href="#s04"><span class="n">04</span> Spesifikasi 13 Database</a></li>
+      <li><a href="#s05"><span class="n">05</span> Formula Inti</a></li>
+      <li><a href="#s06"><span class="n">06</span> Client Portal</a></li>
+      <li><a href="#s07"><span class="n">07</span> Keamanan &amp; Batasnya</a></li>
+      <li><a href="#s08"><span class="n">08</span> Automasi</a></li>
+      <li><a href="#s09"><span class="n">09</span> Yang Perlu Diputuskan</a></li>
+      <li><a href="#s10"><span class="n">10</span> Rencana Pembangunan</a></li>
+    </ol>
+  </nav>
+
+  <!-- ================= 01 ================= -->
+  <section id="s01">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Hasil audit workspace</h2>
+      <p class="sub">Workspace diperiksa lewat Notion MCP dengan panggilan baca saja: identitas koneksi, daftar teamspace, halaman privat, halaman yang dibagikan, halaman terbaru, pencarian isi, dan skema tiap database yang ditemukan.</p>
+    </div>
+
+    <div class="body-col">
+      <h3>Yang ditemukan</h3>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr><th>Objek</th><th>Tipe</th><th>Isi</th><th>Penilaian</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Projects</td><td>Database</td>
+              <td>5 properti: <code>Name</code>, <code>Stage</code>, <code>Timeline</code>, <code>Lead</code>, relasi ke Tasks/Docs/Meetings. Berisi data contoh bawaan Notion (<em>Website Redesign</em>, <em>Mobile App Launch</em>).</td>
+              <td><span class="chip chip-n">Template bawaan</span></td>
+            </tr>
+            <tr>
+              <td>Tasks</td><td>Database</td>
+              <td>4 properti: <code>Name</code>, <code>Status</code>, <code>Due date</code>, relasi <code>Project</code>. Data contoh.</td>
+              <td><span class="chip chip-n">Template bawaan</span></td>
+            </tr>
+            <tr>
+              <td>Docs</td><td>Database</td>
+              <td>Relasi ke Projects. Berisi <em>Brand Guidelines</em>, <em>Your first doc</em>.</td>
+              <td><span class="chip chip-n">Template bawaan</span></td>
+            </tr>
+            <tr>
+              <td>Meetings</td><td>Database</td>
+              <td>Relasi ke Projects. Berisi <em>Website Redesign Kickoff</em>.</td>
+              <td><span class="chip chip-n">Template bawaan</span></td>
+            </tr>
+            <tr>
+              <td>Notes</td><td>Database</td>
+              <td>1 properti: <code>Name</code>. Kosong.</td>
+              <td><span class="chip chip-n">Kosong</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Yang tidak ditemukan</h3>
+      <p>Tidak ada satu pun database atau halaman yang berisi data studio sungguhan. Tidak ada Client, Invoice, Finance, Team, Fee, Proposal, Design Progress, maupun Client Portal. Tidak ada halaman yang dibagikan ke pihak luar, dan tidak ada guest terdaftar. Isi workspace saat ini adalah paket contoh yang otomatis dibuat Notion saat akun baru dibuat.</p>
+
+      <div class="scroller">
+        <table>
+          <thead><tr><th>Aspek</th><th>Kondisi</th></tr></thead>
+          <tbody>
+            <tr><td>Anggota workspace</td><td>2 orang — Pahlevi Dirga Design Architecture (owner), Muhammad Fikri. Plus 1 bot: Notion MCP.</td></tr>
+            <tr><td>Guest / client</td><td>Belum ada.</td></tr>
+            <tr><td>Teamspace</td><td>Hanya <strong>Team HQ</strong>. Belum ada pemisahan internal vs client.</td></tr>
+            <tr><td>Halaman dibagikan</td><td>Kosong.</td></tr>
+            <tr><td>Data Excel</td><td>Belum masuk Notion sama sekali. Sheet <em>List Project</em> dan <em>Keluar Masuk</em> masih di luar sistem.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note caut">
+        <span class="lbl">Perlu diperiksa</span>
+        <p>Akun Notion yang tersambung adalah <code>pahlevidirgadesign@gmail.com</code>, sementara sesi kerja ini berjalan atas <code>gwgmanagementid@gmail.com</code>. Kalau memang ini workspace yang benar, tidak ada masalah. Kalau Anda mengira ada workspace lain yang sudah berisi data studio, koneksi MCP-nya belum mengarah ke sana — dan sistem akan terbangun di tempat yang salah.</p>
+      </div>
+
+      <div class="note caut">
+        <span class="lbl">Batas paket</span>
+        <p>Koneksi melaporkan <code>query_meeting_notes</code> butuh upgrade ke Business, dan <code>query_data_sources</code> berstatus <em>tersedia dengan batas kuota</em>. Indikasinya workspace ini di paket Free atau Plus. Ini berpengaruh langsung ke dua hal: jumlah guest yang boleh diundang, dan apakah automasi database bawaan Notion bisa dipakai. Angka pastinya perlu dicek di <strong>Settings &amp; Members → Plans</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 ================= -->
+  <section id="s02">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>Dipakai ulang, atau dibangun baru</h2>
+      <p class="sub">Aturan Anda: jangan hapus yang lama, jangan buat duplikat, evaluasi dulu sebelum bikin baru. Berikut penilaian per database yang ada.</p>
+    </div>
+
+    <div class="body-col">
+      <div class="scroller">
+        <table>
+          <thead><tr><th>Database lama</th><th>Rekomendasi</th><th>Alasan</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Projects</td>
+              <td><span class="chip chip-x">Jangan pakai ulang</span></td>
+              <td>PROJECTS studio butuh ±35 properti termasuk relasi ke 9 database lain. Database ini hanya punya 5 properti dan sudah terikat relasi ke Tasks/Docs/Meetings bawaan. Menempelkan sistem baru di atasnya membuat data contoh bercampur dengan project sungguhan, dan relasi lama ikut terbawa selamanya. Biarkan utuh, tidak dihapus.</td>
+            </tr>
+            <tr>
+              <td>Tasks</td>
+              <td><span class="chip chip-x">Jangan pakai ulang</span></td>
+              <td>Relasi <code>Project</code>-nya menunjuk ke Projects bawaan. Dipakai ulang berarti mewarisi relasi yang salah sasaran.</td>
+            </tr>
+            <tr>
+              <td>Docs, Meetings, Notes</td>
+              <td><span class="chip chip-rel">Biarkan</span></td>
+              <td>Tidak bertabrakan dengan sistem. Berguna untuk catatan rapat dan dokumen internal non-project. Tidak diubah, tidak dihapus.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Kesimpulan:</strong> 13 database sistem dibangun baru di dalam sebuah halaman induk <code>STUDIO OS</code>. Lima database lama tetap di tempatnya, tidak disentuh. Untuk menghindari kebingungan nama, database sistem memakai nama huruf besar (<code>PROJECTS</code>) yang berbeda dari bawaan (<code>Projects</code>) — dan letaknya terpisah di halaman induk sendiri.</p>
+
+      <div class="note">
+        <span class="lbl">Saran struktur</span>
+        <p>Sebaiknya database sistem tidak diletakkan di teamspace <strong>Team HQ</strong> yang sudah berisi contoh bawaan, melainkan di halaman induk baru. Ini bukan sekadar rapi — halaman induk adalah batas izin akses. Semua yang ada di dalamnya tidak akan pernah terbagi ke client selama induknya tidak dibagikan. Ini jadi pondasi keamanan di Bagian&nbsp;07.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 ================= -->
+  <section id="s03">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Peta sistem</h2>
+      <p class="sub">Satu database jadi pusat. Semua yang lain menggantung padanya, sehingga tiap data cukup diketik satu kali dan mengalir ke mana-mana lewat relasi dan rollup.</p>
+    </div>
+
+    <div class="body-col">
+      <h3>Alur kerja project</h3>
+      <ul class="flow">
+        <li>Lead</li><li class="arw">→</li>
+        <li>Brief</li><li class="arw">→</li>
+        <li>Proposal</li><li class="arw">→</li>
+        <li>Deal</li><li class="arw">→</li>
+        <li class="pay">Invoice DP</li><li class="arw">→</li>
+        <li class="gate">DP Dibayar</li><li class="arw">→</li>
+        <li>Design 1</li><li class="arw">→</li>
+        <li class="pay">Invoice Pelunasan</li><li class="arw">→</li>
+        <li class="gate">Lunas</li><li class="arw">→</li>
+        <li>Design 2</li><li class="arw">→</li>
+        <li>Final Review</li><li class="arw">→</li>
+        <li>Selesai</li><li class="arw">→</li>
+        <li>Deliverables</li>
+      </ul>
+      <p style="font-size:.86rem;color:var(--ink-3)">Kotak teal adalah titik penagihan. Kotak amber adalah <em>gerbang</em> — pekerjaan desain berikutnya tidak dimulai sebelum pembayaran di tahap itu masuk.</p>
+
+      <h3>Struktur database</h3>
+      <div class="hub">
+        <div class="node center">
+          <span class="nm">PROJECTS</span>
+          <span class="dsc">Pusat sistem. Semua angka keuangan, progress, dan HPP dihitung di sini lewat rollup dari database di bawah. Tidak ada angka yang diketik dua kali.</span>
+        </div>
+        <div class="node"><span class="nm">CLIENTS</span><span class="dsc">Identitas client. Satu-satunya tempat nama client disimpan.</span></div>
+        <div class="node"><span class="nm">LEADS</span><span class="dsc">Calon client sebelum jadi client. Sumber angka KPI lead.</span></div>
+        <div class="node"><span class="nm">PROPOSALS</span><span class="dsc">Penawaran, fee, skema DP, masa berlaku.</span></div>
+        <div class="node"><span class="nm">INVOICES</span><span class="dsc">Tagihan DP dan pelunasan. Sumber angka <em>Total Dibayar</em>.</span></div>
+        <div class="node"><span class="nm">FINANCE TRANSACTIONS</span><span class="dsc">Kas masuk dan keluar. Pengganti sheet <em>Keluar Masuk</em>.</span></div>
+        <div class="node"><span class="nm">PROJECT EXPENSES</span><span class="dsc">Biaya per project. Komponen HPP.</span></div>
+        <div class="node"><span class="nm">TEAM MEMBERS</span><span class="dsc">Satu database untuk semua orang. Bukan satu database per orang.</span></div>
+        <div class="node"><span class="nm">PROJECT TEAM</span><span class="dsc">Penugasan + persentase fee per project. Komponen HPP.</span></div>
+        <div class="node"><span class="nm">TEAM PAYMENTS</span><span class="dsc">Realisasi pembayaran fee ke team.</span></div>
+        <div class="node"><span class="nm">DESIGN PROGRESS</span><span class="dsc">14 tahap desain per project. Sumber angka progress.</span></div>
+        <div class="node"><span class="nm">PROJECT DOCUMENTS</span><span class="dsc">File + saklar <em>Client Visible</em>.</span></div>
+        <div class="node"><span class="nm">TASKS &amp; MILESTONES</span><span class="dsc">Pekerjaan harian dan tenggat.</span></div>
+      </div>
+
+      <h3>Arah relasi</h3>
+      <div class="scroller">
+        <table>
+          <thead><tr><th>Dari</th><th>Ke</th><th>Sifat</th><th>Yang mengalir balik</th></tr></thead>
+          <tbody>
+            <tr><td>LEADS</td><td>CLIENTS</td><td>Satu arah, saat konversi</td><td>—</td></tr>
+            <tr><td>CLIENTS</td><td>PROJECTS</td><td>1 → banyak</td><td>Total nilai project, outstanding, jumlah project</td></tr>
+            <tr><td>PROJECTS</td><td>PROPOSALS</td><td>1 → banyak</td><td>Fee disepakati</td></tr>
+            <tr><td>PROJECTS</td><td>INVOICES</td><td>1 → banyak</td><td>Total ditagih, total dibayar, sisa</td></tr>
+            <tr><td>INVOICES</td><td>FINANCE TRANSACTIONS</td><td>1 → banyak</td><td>Realisasi kas masuk</td></tr>
+            <tr><td>PROJECTS</td><td>PROJECT TEAM</td><td>1 → banyak</td><td>Total fee team</td></tr>
+            <tr><td>PROJECT TEAM</td><td>TEAM MEMBERS</td><td>banyak → 1</td><td>Beban kerja, fee pending per orang</td></tr>
+            <tr><td>PROJECT TEAM</td><td>TEAM PAYMENTS</td><td>1 → banyak</td><td>Fee sudah dibayar, sisa fee</td></tr>
+            <tr><td>PROJECTS</td><td>PROJECT EXPENSES</td><td>1 → banyak</td><td>Total pengeluaran</td></tr>
+            <tr><td>PROJECTS</td><td>DESIGN PROGRESS</td><td>1 → 14</td><td>Progress Design 1, Design 2, keseluruhan</td></tr>
+            <tr><td>PROJECTS</td><td>PROJECT DOCUMENTS</td><td>1 → banyak</td><td>Jumlah dokumen siap kirim ke client</td></tr>
+            <tr><td>PROJECTS</td><td>TASKS &amp; MILESTONES</td><td>1 → banyak</td><td>Task terbuka, task terlambat</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note good">
+        <span class="lbl">Kolom Excel dipetakan ke mana</span>
+        <p>Kolom <code>Team Design</code>, <code>Leader</code>, <code>Drafter</code>, <code>Render</code>, <code>Estimator</code> di sheet <em>List Project</em> tidak jadi lima kolom di PROJECTS. Kelimanya jadi <strong>baris</strong> di PROJECT TEAM. Bedanya: tiap penugasan sekarang punya persentase fee, nilai rupiah, dan status pembayarannya sendiri — dan begitu ada peran keenam, tidak perlu menambah kolom apa pun.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 ================= -->
+  <section id="s04">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>Spesifikasi 13 database</h2>
+      <p class="sub">Legenda: <span class="chip chip-n">isi</span> diketik manual · <span class="chip chip-rel">rel</span> relasi ke database lain · <span class="chip chip-r">roll</span> rollup, angka ditarik dari database lain · <span class="chip chip-f">rms</span> formula, dihitung otomatis.</p>
+    </div>
+
+    <div class="body-col">
+
+      <h4>01 — CLIENTS</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nama Client</td><td><span class="chip chip-n">isi</span> Title</td><td>Satu-satunya tempat nama client hidup.</td></tr>
+          <tr><td>Perusahaan</td><td><span class="chip chip-n">isi</span> Text</td><td>Kosongkan untuk client perorangan.</td></tr>
+          <tr><td>Email</td><td><span class="chip chip-n">isi</span> Email</td><td>Dipakai untuk mengundang guest ke Client Portal.</td></tr>
+          <tr><td>Nomor WhatsApp</td><td><span class="chip chip-n">isi</span> Phone</td><td></td></tr>
+          <tr><td>Alamat</td><td><span class="chip chip-n">isi</span> Text</td><td></td></tr>
+          <tr><td>Kota</td><td><span class="chip chip-n">isi</span> Select</td><td>Pontianak · Kubu Raya · Singkawang · Mempawah · Luar Kalbar · Lainnya</td></tr>
+          <tr><td>Jenis Client</td><td><span class="chip chip-n">isi</span> Select</td><td>Perorangan · Perusahaan · F&amp;B Owner · Developer · Kontraktor · Partner</td></tr>
+          <tr><td>Status Client</td><td><span class="chip chip-n">isi</span> Select</td><td>Lead · Prospek · Aktif · Selesai · Tidak Aktif</td></tr>
+          <tr><td>Sumber</td><td><span class="chip chip-n">isi</span> Select</td><td>Instagram · Referral · Website · WhatsApp · Walk-in · Lainnya</td></tr>
+          <tr><td>Projects</td><td><span class="chip chip-rel">rel</span> → PROJECTS</td><td>Dua arah.</td></tr>
+          <tr><td>Proposals · Invoices</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Total Nilai Project</td><td><span class="chip chip-r">roll</span></td><td>Jumlah <code>Fee Project</code> semua project client ini.</td></tr>
+          <tr><td>Total Dibayar</td><td><span class="chip chip-r">roll</span></td><td></td></tr>
+          <tr><td>Outstanding</td><td><span class="chip chip-f">rms</span></td><td>Total nilai − total dibayar.</td></tr>
+          <tr><td>Jumlah Project</td><td><span class="chip chip-r">roll</span></td><td>Count.</td></tr>
+          <tr><td>Portal URL</td><td><span class="chip chip-n">isi</span> URL</td><td>Tautan ke halaman portal milik client ini.</td></tr>
+          <tr><td>Catatan</td><td><span class="chip chip-n">isi</span> Text</td><td>Internal. Tidak pernah tampil di portal.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>02 — PROJECTS <span style="color:var(--ink-3);text-transform:none;letter-spacing:0">— pusat sistem</span></h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nomor Project</td><td><span class="chip chip-f">rms</span> Unique ID</td><td>Otomatis: <code>PRJ-1</code>, <code>PRJ-2</code>…</td></tr>
+          <tr><td>Nama Project</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Client</td><td><span class="chip chip-rel">rel</span> → CLIENTS</td><td></td></tr>
+          <tr><td>Jenis Project</td><td><span class="chip chip-n">isi</span> Select</td><td>Coffee Shop · Rumah Tinggal · Interior · Arsitektur · Renovasi · Komersial Lain</td></tr>
+          <tr><td>Scope of Work</td><td><span class="chip chip-n">isi</span> Multi-select</td><td>Konsep · Denah · Tampak · 3D · Render · DED · RAB · Dokumentasi · Pengawasan</td></tr>
+          <tr><td>Alamat · Kota</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Architect in Charge</td><td><span class="chip chip-rel">rel</span> → TEAM MEMBERS</td><td>Tampil di Client Portal.</td></tr>
+          <tr><td>Project Leader</td><td><span class="chip chip-rel">rel</span> → TEAM MEMBERS</td><td></td></tr>
+          <tr><td>Tanggal Mulai · Deadline</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Status Project</td><td><span class="chip chip-n">isi</span> Status</td><td>15 tahap: Lead → Brief → Proposal → Negosiasi → Deal → Menunggu DP → DP Dibayar → Design 1 → Menunggu Approval → Menunggu Pelunasan → Design 2 → Final Review → Selesai → Arsip → Dibatalkan</td></tr>
+          <tr><td>Fee Project</td><td><span class="chip chip-n">isi</span> Number (Rp)</td><td>Satu-satunya angka fee yang diketik manual.</td></tr>
+          <tr><td>Persentase DP</td><td><span class="chip chip-n">isi</span> Number</td><td>Default 50, bebas diubah per project.</td></tr>
+          <tr><td>Persentase Pelunasan</td><td><span class="chip chip-n">isi</span> Number</td><td>Default 50. Dibiarkan manual supaya skema 40/60, 30/70, atau termin lain tetap mungkin.</td></tr>
+          <tr><td>Cek Persentase</td><td><span class="chip chip-f">rms</span></td><td>Menyala <code>⚠ Total ≠ 100%</code> kalau salah jumlah. Pengaman, bukan pengunci.</td></tr>
+          <tr><td>Nilai DP · Nilai Pelunasan</td><td><span class="chip chip-f">rms</span></td><td>Fee × persentase.</td></tr>
+          <tr><td>Total Ditagih</td><td><span class="chip chip-r">roll</span> ← INVOICES</td><td></td></tr>
+          <tr><td>Total Dibayar</td><td><span class="chip chip-r">roll</span> ← INVOICES</td><td>Hanya invoice berstatus Dibayar. Caranya dijelaskan di Bagian&nbsp;05.</td></tr>
+          <tr><td>Sisa Pembayaran</td><td><span class="chip chip-f">rms</span></td><td></td></tr>
+          <tr><td>Total Fee Team</td><td><span class="chip chip-r">roll</span> ← PROJECT TEAM</td><td></td></tr>
+          <tr><td>Total Pengeluaran</td><td><span class="chip chip-r">roll</span> ← PROJECT EXPENSES</td><td></td></tr>
+          <tr><td>Total HPP</td><td><span class="chip chip-f">rms</span></td><td>Fee team + pengeluaran.</td></tr>
+          <tr><td>Profit (Proyeksi)</td><td><span class="chip chip-f">rms</span></td><td>Kalau semua tertagih penuh.</td></tr>
+          <tr><td>Profit (Realisasi)</td><td><span class="chip chip-f">rms</span></td><td>Berdasar uang yang benar-benar masuk.</td></tr>
+          <tr><td>Margin Proyeksi · Realisasi</td><td><span class="chip chip-f">rms</span></td><td>Dalam persen.</td></tr>
+          <tr><td>Target Margin %</td><td><span class="chip chip-n">isi</span> Number</td><td>Default 35, bisa diubah manajemen per project.</td></tr>
+          <tr><td>Status Margin</td><td><span class="chip chip-f">rms</span></td><td>🟢 Sehat · 🟡 Perhatian · 🔴 Warning — ambangnya ikut Target Margin, bukan angka mati.</td></tr>
+          <tr><td>Bobot Design 1</td><td><span class="chip chip-n">isi</span> Number</td><td>Default 60. Porsi Design 1 dalam progress keseluruhan.</td></tr>
+          <tr><td>Progress Design 1 · 2</td><td><span class="chip chip-f">rms</span></td><td>Rata-rata tertimbang dari DESIGN PROGRESS.</td></tr>
+          <tr><td>Progress Project</td><td><span class="chip chip-f">rms</span></td><td></td></tr>
+          <tr><td>Progress Bar</td><td><span class="chip chip-f">rms</span></td><td>Menghasilkan <code>████████████░░░░ 75%</code> untuk ditempel di portal.</td></tr>
+          <tr><td>Terlambat?</td><td><span class="chip chip-f">rms</span></td><td>Menyala kalau lewat deadline dan belum selesai.</td></tr>
+          <tr><td>Client Portal · Sinkron Terakhir</td><td><span class="chip chip-n">isi</span> URL, Date</td><td></td></tr>
+          <tr><td>Internal Notes</td><td><span class="chip chip-n">isi</span> Text</td><td>Tidak pernah keluar ke client.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>03 — TEAM MEMBERS</h4>
+      <p style="font-size:.94rem;max-width:var(--measure)">Satu database untuk semua orang: Adji, Dany, Daji, Raffi, dan siapa pun berikutnya jadi <em>baris</em>, bukan database sendiri-sendiri.</p>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nama</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Role</td><td><span class="chip chip-n">isi</span> Select</td><td>Principal Architect · Architect · Project Leader · Drafter · 3D Artist · Renderer · Estimator · Freelancer · Admin</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Aktif · Non-Aktif · Cuti</td></tr>
+          <tr><td>Jenis Team</td><td><span class="chip chip-n">isi</span> Select</td><td>Internal · Freelance · Partner</td></tr>
+          <tr><td>Persentase Fee Default</td><td><span class="chip chip-n">isi</span> Number</td><td>Angka awal saat ditugaskan — bisa ditimpa per project.</td></tr>
+          <tr><td>Email · WhatsApp</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Project Team · Team Payments</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Total Fee Diterima</td><td><span class="chip chip-r">roll</span></td><td></td></tr>
+          <tr><td>Total Fee Pending</td><td><span class="chip chip-f">rms</span></td><td>Fee yang sudah jadi hak tapi belum dibayar.</td></tr>
+          <tr><td>Project Aktif</td><td><span class="chip chip-r">roll</span></td><td>Ukuran beban kerja untuk Team Dashboard.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>04 — PROJECT TEAM <span style="color:var(--ink-3);text-transform:none;letter-spacing:0">— jembatan project ↔ orang</span></h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Penugasan</td><td><span class="chip chip-n">isi</span> Title</td><td>Contoh: <em>Test Coffee Shop A — Drafter</em></td></tr>
+          <tr><td>Project · Team Member</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Role</td><td><span class="chip chip-n">isi</span> Select</td><td>Orang yang sama bisa punya peran berbeda di project berbeda.</td></tr>
+          <tr><td>Fee Project</td><td><span class="chip chip-r">roll</span> ← PROJECTS</td><td>Dasar perhitungan, ditarik otomatis.</td></tr>
+          <tr><td>Persentase Fee</td><td><span class="chip chip-n">isi</span> Number</td><td>Drafter 10, Render 5 — hanya <em>saran awal</em>, bebas diubah tiap project.</td></tr>
+          <tr><td>Fee Tetap</td><td><span class="chip chip-n">isi</span> Number</td><td>Untuk yang dibayar lump sum, bukan persentase.</td></tr>
+          <tr><td>Persentase Bonus · Bonus Tetap</td><td><span class="chip chip-n">isi</span> Number</td><td></td></tr>
+          <tr><td>Total Fee</td><td><span class="chip chip-f">rms</span></td><td>(Fee × %) + fee tetap + (Fee × %bonus) + bonus tetap.</td></tr>
+          <tr><td>Total Dibayar</td><td><span class="chip chip-r">roll</span> ← TEAM PAYMENTS</td><td></td></tr>
+          <tr><td>Sisa Fee</td><td><span class="chip chip-f">rms</span></td><td></td></tr>
+          <tr><td>Status Pembayaran</td><td><span class="chip chip-n">isi</span> Select</td><td>Belum Dibayar · Sebagian · Lunas</td></tr>
+          <tr><td>Catatan</td><td><span class="chip chip-n">isi</span> Text</td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>05 — DESIGN PROGRESS</h4>
+      <p style="font-size:.94rem;max-width:var(--measure)">14 baris per project — 9 tahap Design 1, 5 tahap Design 2. Inilah sumber semua angka progress; tidak ada persen yang diketik manual di PROJECTS.</p>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Tahap</td><td><span class="chip chip-n">isi</span> Title</td><td>D1: Brief · Konsep · Denah · Tampak · 3D · Render · Review Client · Revisi · Approval<br>D2: DED · Gambar Detail · RAB · Final Review · Approval</td></tr>
+          <tr><td>Project</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Fase</td><td><span class="chip chip-n">isi</span> Select</td><td>Design 1 · Design 2</td></tr>
+          <tr><td>Urutan</td><td><span class="chip chip-n">isi</span> Number</td><td>01–14, untuk pengurutan tampilan.</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Belum Mulai · Berjalan · Review Client · Revisi · Approved · Selesai</td></tr>
+          <tr><td>Progress %</td><td><span class="chip chip-n">isi</span> Number</td><td>0–100.</td></tr>
+          <tr><td>Bobot</td><td><span class="chip chip-n">isi</span> Number</td><td>Default 1. Naikkan untuk tahap berat — Render boleh berbobot 3, Brief cukup 1.</td></tr>
+          <tr><td>Deadline · PIC</td><td><span class="chip chip-n">isi</span> / <span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Client Visible</td><td><span class="chip chip-n">isi</span> Checkbox</td><td>Tahap internal seperti <em>Revisi</em> boleh disembunyikan dari portal.</td></tr>
+          <tr><td>Perlu Approval · Approved</td><td><span class="chip chip-n">isi</span> Checkbox</td><td>Menjawab pertanyaan client “apa yang perlu saya approve?”</td></tr>
+          <tr><td>Catatan Internal</td><td><span class="chip chip-n">isi</span> Text</td><td>Tidak pernah keluar.</td></tr>
+          <tr><td>Catatan untuk Client</td><td><span class="chip chip-n">isi</span> Text</td><td>Satu-satunya catatan yang boleh masuk portal.</td></tr>
+          <tr><td>Bobot D1 · Skor D1 · Bobot D2 · Skor D2</td><td><span class="chip chip-f">rms</span></td><td>Empat formula pembantu yang memungkinkan progress per fase dihitung terpisah.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>06 — PROJECT DOCUMENTS</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nama File</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Project</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Jenis Dokumen</td><td><span class="chip chip-n">isi</span> Select</td><td>Brief · Proposal · Contract · Invoice · Denah · Tampak · 3D · Render · DED · RAB · Final PDF · Print File · Lainnya</td></tr>
+          <tr><td>Versi</td><td><span class="chip chip-n">isi</span> Text</td><td>R0, R1, R2…</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Draft · Review · Approved · Final · Superseded</td></tr>
+          <tr><td>Client Visible</td><td><span class="chip chip-n">isi</span> Checkbox</td><td></td></tr>
+          <tr><td>Approved</td><td><span class="chip chip-n">isi</span> Checkbox</td><td></td></tr>
+          <tr><td>Siap Portal</td><td><span class="chip chip-f">rms</span></td><td><strong>Client Visible ∧ Approved ∧ status Final/Approved.</strong> Hanya yang lolos tiga syarat ini yang boleh ditempel ke portal — jadi tidak ada keputusan mendadak saat mengirim file.</td></tr>
+          <tr><td>File · Link Eksternal</td><td><span class="chip chip-n">isi</span></td><td>File besar sebaiknya di Drive, tautannya saja di sini.</td></tr>
+          <tr><td>Tanggal Upload · Catatan</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>07 — PROPOSALS</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nomor Proposal</td><td><span class="chip chip-f">rms</span> Unique ID</td><td><code>PRP-1</code>…</td></tr>
+          <tr><td>Judul · Client · Project</td><td><span class="chip chip-n">isi</span> / <span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Tanggal · Berlaku Sampai</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Scope of Work</td><td><span class="chip chip-n">isi</span> Multi-select</td><td></td></tr>
+          <tr><td>Fee · % DP · % Pelunasan</td><td><span class="chip chip-n">isi</span> Number</td><td>Angka yang disepakati di sini disalin ke PROJECTS saat deal.</td></tr>
+          <tr><td>Nilai DP · Nilai Pelunasan</td><td><span class="chip chip-f">rms</span></td><td>Supaya proposal bisa menampilkan rupiah, bukan cuma persen.</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Draft · Dikirim · Negosiasi · Disetujui · Ditolak · Kadaluarsa</td></tr>
+          <tr><td>Kadaluarsa?</td><td><span class="chip chip-f">rms</span></td><td>Menandai proposal lewat masa berlaku yang masih menggantung.</td></tr>
+          <tr><td>Catatan</td><td><span class="chip chip-n">isi</span> Text</td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>08 — INVOICES</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nomor Invoice</td><td><span class="chip chip-f">rms</span> Unique ID</td><td><code>INV-1</code>…</td></tr>
+          <tr><td>Project · Client</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Jenis Invoice</td><td><span class="chip chip-n">isi</span> Select</td><td>DP · Pelunasan · Termin · Lainnya</td></tr>
+          <tr><td>Persentase</td><td><span class="chip chip-n">isi</span> Number</td><td></td></tr>
+          <tr><td>Fee Project</td><td><span class="chip chip-r">roll</span></td><td>Ditarik dari project.</td></tr>
+          <tr><td>Nilai Manual</td><td><span class="chip chip-n">isi</span> Number</td><td>Diisi hanya kalau nilainya menyimpang dari rumus persentase.</td></tr>
+          <tr><td>Nilai Invoice</td><td><span class="chip chip-f">rms</span></td><td>Pakai Nilai Manual bila ada, kalau tidak Fee × persentase.</td></tr>
+          <tr><td>Tanggal Invoice · Jatuh Tempo</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Status Pembayaran</td><td><span class="chip chip-n">isi</span> Select</td><td>Draft · Dikirim · Menunggu Pembayaran · Dibayar · Terlambat · Dibatalkan</td></tr>
+          <tr><td>Tanggal Pembayaran</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Nilai Dibayar</td><td><span class="chip chip-f">rms</span></td><td>Nilai invoice bila status Dibayar, selain itu 0. Kunci agar <code>Total Dibayar</code> di project akurat.</td></tr>
+          <tr><td>Terlambat?</td><td><span class="chip chip-f">rms</span></td><td>Menghitung sendiri umur tunggakan dalam hari.</td></tr>
+          <tr><td>Finance Transactions</td><td><span class="chip chip-rel">rel</span></td><td>Menghubungkan tagihan ke kas yang benar-benar masuk.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>09 — FINANCE TRANSACTIONS <span style="color:var(--ink-3);text-transform:none;letter-spacing:0">— pengganti sheet Keluar Masuk</span></h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nomor</td><td><span class="chip chip-f">rms</span> Unique ID</td><td><code>TRX-1</code>…</td></tr>
+          <tr><td>Item</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Tanggal</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Project</td><td><span class="chip chip-rel">rel</span></td><td>Dikosongkan untuk biaya operasional studio yang bukan milik project mana pun.</td></tr>
+          <tr><td>Jenis Transaksi</td><td><span class="chip chip-n">isi</span> Select</td><td>Pembayaran Client · DP · Pelunasan · Pengeluaran Operasional · Pembayaran Freelancer · Pembayaran Team · Pendapatan Lain · Pengeluaran Lain</td></tr>
+          <tr><td>Dari/Untuk</td><td><span class="chip chip-n">isi</span> Text</td><td></td></tr>
+          <tr><td>Masuk · Keluar</td><td><span class="chip chip-n">isi</span> Number (Rp)</td><td>Persis seperti dua kolom di Excel sekarang.</td></tr>
+          <tr><td>Nett</td><td><span class="chip chip-f">rms</span></td><td>Masuk − keluar, untuk penjumlahan arus kas.</td></tr>
+          <tr><td>Invoice · Team Member</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Metode · Bukti · Keterangan</td><td><span class="chip chip-n">isi</span></td><td>Transfer · Cash · QRIS; lampiran foto bukti.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>10 — PROJECT EXPENSES</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Item</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Project</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Kategori</td><td><span class="chip chip-n">isi</span> Select</td><td>Freelancer · Transportasi · Printing · Survey · Material Sample · Operasional · Perizinan · Lainnya</td></tr>
+          <tr><td>Jumlah · Tanggal</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Masuk HPP?</td><td><span class="chip chip-n">isi</span> Checkbox</td><td>Default aktif. Dimatikan untuk biaya yang tidak layak dibebankan ke project.</td></tr>
+          <tr><td>Nilai HPP</td><td><span class="chip chip-f">rms</span></td><td>Jumlah bila checkbox aktif, kalau tidak 0. Inilah yang di-rollup ke project.</td></tr>
+          <tr><td>Status · Bukti · Catatan</td><td><span class="chip chip-n">isi</span></td><td>Draft · Approved · Dibayar</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>11 — TEAM PAYMENTS</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nomor</td><td><span class="chip chip-f">rms</span> Unique ID</td><td><code>PAY-1</code>…</td></tr>
+          <tr><td>Project · Team Member · Penugasan</td><td><span class="chip chip-rel">rel</span></td><td>Relasi ke PROJECT TEAM supaya sisa fee terhitung per penugasan.</td></tr>
+          <tr><td>Jumlah · Tanggal · Metode</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Draft · Dijadwalkan · Dibayar</td></tr>
+          <tr><td>Nilai Terbayar</td><td><span class="chip chip-f">rms</span></td><td>Hanya menghitung yang berstatus Dibayar.</td></tr>
+          <tr><td>Bukti · Catatan</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>12 — TASKS &amp; MILESTONES</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Task</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Project · PIC</td><td><span class="chip chip-rel">rel</span></td><td></td></tr>
+          <tr><td>Tipe</td><td><span class="chip chip-n">isi</span> Select</td><td>Task · Milestone</td></tr>
+          <tr><td>Tahap</td><td><span class="chip chip-n">isi</span> Select</td><td>Brief · Proposal · Design 1 · Design 2 · Finance · Admin · Lainnya</td></tr>
+          <tr><td>Deadline · Priority</td><td><span class="chip chip-n">isi</span></td><td>Rendah · Sedang · Tinggi · Urgent</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Belum Mulai · Berjalan · Review · Selesai · Dibatalkan</td></tr>
+          <tr><td>Client Visible · Catatan</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Terlambat?</td><td><span class="chip chip-f">rms</span></td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>13 — LEADS</h4>
+      <div class="scroller"><table>
+        <thead><tr><th>Properti</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Nama Lead</td><td><span class="chip chip-n">isi</span> Title</td><td></td></tr>
+          <tr><td>Kontak · WhatsApp · Email</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Sumber</td><td><span class="chip chip-n">isi</span> Select</td><td>Sama dengan CLIENTS, supaya bisa dihitung kanal mana yang menghasilkan.</td></tr>
+          <tr><td>Jenis Project · Kota</td><td><span class="chip chip-n">isi</span></td><td></td></tr>
+          <tr><td>Estimasi Nilai</td><td><span class="chip chip-n">isi</span> Number</td><td>Dasar angka pipeline.</td></tr>
+          <tr><td>Status</td><td><span class="chip chip-n">isi</span> Select</td><td>Baru · Dihubungi · Qualified · Survey · Proposal Dikirim · Menang · Kalah · Dingin</td></tr>
+          <tr><td>Tanggal Masuk · Follow Up Berikutnya</td><td><span class="chip chip-n">isi</span> Date</td><td></td></tr>
+          <tr><td>Umur Lead · Perlu Follow Up?</td><td><span class="chip chip-f">rms</span></td><td>Menandai lead yang didiamkan terlalu lama.</td></tr>
+          <tr><td>Alasan Kalah</td><td><span class="chip chip-n">isi</span> Select</td><td>Harga · Timeline · Tidak Jadi Bangun · Pilih Studio Lain · Tidak Merespons</td></tr>
+          <tr><td>Client</td><td><span class="chip chip-rel">rel</span></td><td>Diisi saat lead menang dan naik jadi client.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ================= 05 ================= -->
+  <section id="s05">
+    <div class="sec-head">
+      <span class="num">05</span>
+      <h2>Formula inti</h2>
+      <p class="sub">Sintaks Notion Formula 2.0. Properti persen disimpan sebagai angka biasa (50 berarti 50%), karena itu dibagi 100.</p>
+    </div>
+
+    <div class="body-col">
+
+      <h3>Uang masuk yang benar-benar masuk</h3>
+      <p>Rollup Notion tidak bisa disaring “hanya yang berstatus Dibayar”. Karena itu penyaringan dilakukan lebih dulu di INVOICES, baru dijumlahkan di PROJECTS. Ini pola yang dipakai berulang di seluruh sistem.</p>
+      <div class="fml">// INVOICES › Nilai Dibayar
+if(prop("Status Pembayaran") == "Dibayar", prop("Nilai Invoice"), 0)
+
+// PROJECTS › Total Dibayar
+rollup Invoices → Nilai Dibayar → Sum</div>
+
+      <h3>Invoice: rumus dengan pintu darurat</h3>
+      <div class="fml">// INVOICES › Nilai Invoice
+if(
+  empty(prop("Nilai Manual")),
+  prop("Fee Project") * prop("Persentase") / 100,
+  prop("Nilai Manual")
+)</div>
+      <p>Fee Rp50.000.000 dengan DP 50% menghasilkan Rp25.000.000 tanpa diketik. Skema 40/60 cukup mengubah satu angka. Kalau ada kesepakatan yang tidak mengikuti pola apa pun, isi <code>Nilai Manual</code> dan rumus mundur dengan sendirinya.</p>
+
+      <h3>Fee team</h3>
+      <div class="fml">// PROJECT TEAM › Total Fee
+  (prop("Fee Project") * prop("Persentase Fee")   / 100)
++  prop("Fee Tetap")
++ (prop("Fee Project") * prop("Persentase Bonus") / 100)
++  prop("Bonus Tetap")</div>
+      <div class="scroller"><table>
+        <thead><tr><th>Peran</th><th class="num-col">%</th><th class="num-col">Fee Project</th><th class="num-col">Total Fee</th></tr></thead>
+        <tbody>
+          <tr><td>Drafter</td><td class="num-col">10%</td><td class="num-col">Rp50.000.000</td><td class="num-col">Rp5.000.000</td></tr>
+          <tr><td>Renderer</td><td class="num-col">5%</td><td class="num-col">Rp50.000.000</td><td class="num-col">Rp2.500.000</td></tr>
+        </tbody>
+      </table></div>
+      <p>Persentase disimpan per penugasan, bukan per peran. Drafter boleh 10% di satu project dan 12% di project lain tanpa mengubah apa pun di tempat lain.</p>
+
+      <h3>Progress tertimbang</h3>
+      <p>Empat formula pembantu di DESIGN PROGRESS memisahkan Design 1 dan Design 2, karena rollup tidak bisa menyaring per fase.</p>
+      <div class="fml">// DESIGN PROGRESS
+Bobot D1 = if(prop("Fase") == "Design 1", prop("Bobot"), 0)
+Skor D1  = if(prop("Fase") == "Design 1", prop("Bobot") * prop("Progress %"), 0)
+
+// PROJECTS
+Progress Design 1 = if(prop("Bobot D1") > 0, round(prop("Skor D1") / prop("Bobot D1")), 0)
+
+Progress Project =
+  round(
+    ( prop("Progress Design 1") * prop("Bobot Design 1")
+    + prop("Progress Design 2") * (100 - prop("Bobot Design 1")) ) / 100
+  )</div>
+      <p>Bobot membuat progress jujur. Tanpa bobot, menyelesaikan <em>Brief</em> dan menyelesaikan <em>Render</em> sama-sama menambah 11% — padahal beban kerjanya jauh berbeda.</p>
+
+      <h3>Batang progress untuk client</h3>
+      <div class="fml">// PROJECTS › Progress Bar
+repeat("█", round(prop("Progress Project") / 6.25))
++ repeat("░", 16 - round(prop("Progress Project") / 6.25))
++ "  " + format(prop("Progress Project")) + "%"</div>
+      <p style="font-family:var(--mono);font-size:.85rem;color:var(--accent)">████████████░░░░&nbsp;&nbsp;75%</p>
+
+      <h3>Profit dan margin</h3>
+      <div class="fml">Total HPP          = prop("Total Fee Team") + prop("Total Pengeluaran")
+Profit (Proyeksi)  = prop("Fee Project")   - prop("Total HPP")
+Profit (Realisasi) = prop("Total Dibayar") - prop("Total HPP")
+
+Margin Proyeksi = if(prop("Fee Project") > 0,
+  round(prop("Profit (Proyeksi)") / prop("Fee Project") * 1000) / 10, 0)</div>
+      <div class="note">
+        <span class="lbl">Kenapa dua versi</span>
+        <p><strong>Proyeksi</strong> menjawab “kalau semua tertagih, project ini untung berapa” — dipakai saat memutuskan menerima pekerjaan. <strong>Realisasi</strong> menjawab “dari uang yang sudah masuk, sekarang untung berapa” — dipakai saat menilai kesehatan kas. Project bisa terlihat sehat secara proyeksi tapi merugi secara realisasi kalau pelunasan macet. Satu angka saja menyembunyikan itu.</p>
+      </div>
+
+      <h3>Indikator margin yang bisa digeser</h3>
+      <div class="fml">// PROJECTS › Status Margin
+if(prop("Margin Proyeksi") >= prop("Target Margin %"),        "🟢 SEHAT",
+if(prop("Margin Proyeksi") >= prop("Target Margin %") - 10,   "🟡 PERHATIAN",
+                                                              "🔴 WARNING"))</div>
+      <p>Dengan target 35: ≥35% sehat, 25–34% perhatian, &lt;25% warning — persis yang Anda minta. Bedanya, angka 35 hidup di properti <code>Target Margin %</code>, bukan di dalam rumus. Manajemen menaikkannya ke 40 tanpa menyentuh formula apa pun.</p>
+
+      <h3>Tunggakan</h3>
+      <div class="fml">// INVOICES › Terlambat?
+if(and(
+    prop("Status Pembayaran") != "Dibayar",
+    prop("Status Pembayaran") != "Dibatalkan",
+    dateBetween(now(), prop("Jatuh Tempo"), "days") > 0
+  ),
+  "⚠ Terlambat " + format(dateBetween(now(), prop("Jatuh Tempo"), "days")) + " hari",
+  ""
+)</div>
+
+      <div class="note caut">
+        <span class="lbl">Batasan yang perlu diketahui</span>
+        <p>Formula bisa <em>menampilkan</em> “Terlambat”, tapi tidak bisa <em>mengubah</em> properti Status Pembayaran — formula di Notion hanya membaca, tidak menulis. Untuk benar-benar mengganti nilai Status dibutuhkan automasi database, yang pembahasannya ada di Bagian&nbsp;08. Dalam praktik, kolom formula plus satu view bernama <em>Invoice Terlambat</em> sudah cukup dan tidak bergantung paket apa pun.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 ================= -->
+  <section id="s06">
+    <div class="sec-head">
+      <span class="num">06</span>
+      <h2>Client Portal</h2>
+      <p class="sub">Dirancang untuk menjawab delapan pertanyaan yang selalu ditanyakan client, dalam satu layar HP, tanpa satu pun angka internal ikut terbawa.</p>
+    </div>
+
+    <div class="body-col">
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start">
+        <div class="mock">
+          <div class="mhead">
+            <div class="studio">Pahlevi Dirga Design Architecture</div>
+            <div class="pname">Kopi Khatulistiwa</div>
+          </div>
+          <div class="mrow">
+            <span class="k">Project</span>
+            <div>Coffee Shop · Jl. Ahmad Yani, Pontianak<br><span style="color:var(--ink-3)">Architect in Charge — Pahlevi Dirga</span></div>
+          </div>
+          <div class="mrow">
+            <span class="k">Tahap saat ini</span>
+            <div style="color:var(--accent);font-weight:600">Design 1 — Rendering</div>
+          </div>
+          <div class="mrow">
+            <span class="k">Progress</span>
+            <div class="bar">████████████░░░░&nbsp;&nbsp;75%</div>
+          </div>
+          <div class="mrow">
+            <span class="k">Timeline</span>
+            <ul class="tl">
+              <li class="done">✓&nbsp; Brief</li>
+              <li class="done">✓&nbsp; Proposal</li>
+              <li class="done">✓&nbsp; DP</li>
+              <li class="now">●&nbsp; Design 1</li>
+              <li>○&nbsp; Pelunasan</li>
+              <li>○&nbsp; Design 2</li>
+              <li>○&nbsp; Selesai</li>
+            </ul>
+          </div>
+          <div class="mrow">
+            <span class="k">Design Progress</span>
+            <ul class="tl">
+              <li class="done">01 — Denah &nbsp;<span style="margin-left:auto">Selesai</span></li>
+              <li class="done">02 — Tampak &nbsp;<span style="margin-left:auto">Selesai</span></li>
+              <li class="now">03 — 3D &nbsp;<span style="margin-left:auto">Berjalan</span></li>
+              <li>04 — Render &nbsp;<span style="margin-left:auto">Belum Mulai</span></li>
+            </ul>
+          </div>
+          <div class="mrow">
+            <span class="k">Dokumen</span>
+            <div style="font-size:.78rem;color:var(--ink-2)">Proposal · Invoice DP · Denah R2 (Approved)</div>
+          </div>
+          <div class="mrow">
+            <span class="k">Pembayaran</span>
+            <div class="pay-line"><span>Project Fee</span><span>Rp50.000.000</span></div>
+            <div class="pay-line"><span>DP 50%</span><span class="paid">LUNAS</span></div>
+            <div class="pay-line"><span>Pelunasan 50%</span><span class="pend">MENUNGGU</span></div>
+          </div>
+          <div class="mrow">
+            <span class="k">Kontak</span>
+            <div style="font-size:.8rem">Pahlevi Dirga · WhatsApp</div>
+          </div>
+        </div>
+
+        <div style="flex:1 1 300px;display:flex;flex-direction:column;gap:1.1rem;min-width:280px">
+          <h3>Prinsip rancangan</h3>
+          <ul style="padding-left:1.15rem;margin:0;font-size:.94rem">
+            <li><strong>Satu kolom, tanpa tabel lebar.</strong> Portal paling sering dibuka dari HP sambil client di lokasi. Tabel Notion yang lebar memaksa geser kanan-kiri dan langsung terasa seperti alat internal, bukan produk.</li>
+            <li><strong>Angka jadi, bukan rumus.</strong> Client melihat <em>75%</em>, bukan properti yang menghasilkannya. Batang progress ditempel sebagai teks, sehingga tidak ada database yang perlu diintip.</li>
+            <li><strong>Status pakai kata, bukan warna saja.</strong> <em>Lunas</em> dan <em>Menunggu</em> terbaca jelas di layar terang maupun gelap.</li>
+            <li><strong>Palet tenang.</strong> Charcoal, putih, satu aksen teal. Terracotta hanya untuk hal yang butuh tindakan client.</li>
+            <li><strong>Urutan mengikuti kecemasan client.</strong> “Sampai mana?” dijawab di layar pertama sebelum di-scroll; kontak diletakkan paling bawah sebagai penutup, bukan pembuka.</li>
+          </ul>
+
+          <div class="note">
+            <span class="lbl">Referensi visual</span>
+            <p>Gaya diambil dari konsep <em>Notion Client Portal for Architects &amp; Designers</em> yang Anda tunjukkan — struktur, hierarki, dan ketenangannya. Tidak ada logo, nama, atau aset dari akun tersebut yang disalin.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Yang tampil, dan yang tidak</h3>
+      <div class="scroller"><table>
+        <thead><tr><th>Boleh dilihat client</th><th>Tidak pernah masuk portal</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Nama &amp; jenis project · lokasi · scope · Architect in Charge · status · progress D1/D2/keseluruhan · timeline · milestone · dokumen ber-<em>Siap Portal</em> · file final · status invoice &amp; pembayaran · catatan khusus client · kontak studio</td>
+            <td style="color:var(--warn)">Fee team · gaji · HPP · profit · margin · pengeluaran internal · biaya operasional · data freelancer · catatan internal · catatan manajemen · seluruh keuangan studio · <strong>project client lain</strong></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ================= 07 ================= -->
+  <section id="s07">
+    <div class="sec-head">
+      <span class="num">07</span>
+      <h2>Keamanan, dan di mana batasnya</h2>
+      <p class="sub">Anda minta jangan berpura-pura sistem ini aman kalau Notion memang tidak mampu. Bagian ini menjelaskan apa yang benar-benar aman, apa yang tidak, dan mana yang cuma terlihat aman.</p>
+    </div>
+
+    <div class="body-col">
+      <div class="note risk">
+        <span class="lbl">Yang harus dipahami lebih dulu</span>
+        <p>Notion <strong>bukan aplikasi SaaS multi-tenant</strong>. Tidak ada login per client, tidak ada keamanan tingkat baris, tidak ada peran yang bisa membatasi kolom mana yang boleh dilihat. Satu-satunya batas keamanan nyata di Notion adalah <strong>izin akses per halaman</strong>. Semua rancangan di bawah bertumpu pada satu kalimat itu.</p>
+      </div>
+
+      <h3>Kesalahan yang paling sering terjadi</h3>
+      <div class="note risk">
+        <span class="lbl">Filter view bukan keamanan</span>
+        <p>Menaruh linked view database PROJECTS di portal, lalu memfilter “Client = PT ABC”, <strong>tidak mengamankan apa pun</strong>. Begitu seseorang punya akses ke database itu, mereka bisa:</p>
+        <ul>
+          <li>mengganti atau menghapus filternya sendiri;</li>
+          <li>menduplikasi view dan membukanya tanpa filter;</li>
+          <li>membuka database sumbernya langsung dan melihat seluruh baris — termasuk kolom profit, margin, dan fee team.</li>
+        </ul>
+        <p>Karena itu aturannya tegas: <strong>client tidak pernah diberi akses ke database internal mana pun</strong>, bahkan yang sudah difilter.</p>
+      </div>
+
+      <h3>Rancangan yang dipakai</h3>
+      <ol style="padding-left:1.2rem;max-width:var(--measure);font-size:.95rem">
+        <li>Seluruh 13 database hidup di dalam halaman induk <code>STUDIO OS</code>. Halaman ini <strong>tidak pernah dibagikan ke siapa pun di luar studio</strong>.</li>
+        <li>Ada halaman induk kedua, <code>CLIENT PORTALS</code>, juga tidak pernah dibagikan. Di dalamnya ada satu sub-halaman per client.</li>
+        <li>Tiap sub-halaman portal dibagikan <strong>satu per satu</strong> ke email client sebagai <em>guest</em> dengan izin <em>Can view</em> atau <em>Can comment</em>. Client A diundang hanya ke Portal A.</li>
+        <li>Isi portal seluruhnya <strong>blok biasa</strong> — teks, callout, toggle, lampiran file. Tidak ada linked view, tidak ada relasi, tidak ada rollup.</li>
+        <li>Portal tidak punya sub-halaman internal. Akses <em>Can view</em> pada sebuah halaman ikut membuka semua anak halamannya.</li>
+      </ol>
+
+      <div class="note good">
+        <span class="lbl">Yang benar-benar aman dengan cara ini</span>
+        <ul>
+          <li>Client A tidak bisa melihat Portal B — tidak diundang, dan tidak ada tautan menuju ke sana.</li>
+          <li>Client A tidak bisa melihat database mana pun — tidak pernah diberi akses.</li>
+          <li>Pencarian Notion milik client hanya menjangkau halaman yang dibagikan kepadanya.</li>
+          <li>Fee team, HPP, profit, margin, dan catatan internal tidak pernah keluar dari halaman induk STUDIO OS.</li>
+        </ul>
+      </div>
+
+      <div class="note caut">
+        <span class="lbl">Harga yang dibayar</span>
+        <p>Karena portal tidak boleh memuat linked view, isinya <strong>tidak ter-update sendiri</strong>. Progress 75% di portal adalah teks yang ditulis ke sana, bukan angka hidup. Ada tiga cara menanganinya:</p>
+        <ul>
+          <li><strong>Manual</strong> — studio memperbarui portal saat ada kemajuan berarti. Sekitar 3–5 menit per project.</li>
+          <li><strong>Disinkronkan agen</strong> <em>(rekomendasi)</em> — koneksi Notion MCP ini dijadwalkan membaca database internal lalu menulis ulang isi tiap portal, misalnya tiap pagi. Otomatis, tanpa membuka satu pun database ke client.</li>
+          <li><strong>Campuran</strong> — sinkron otomatis harian, plus dorong manual sesudah momen penting seperti approval atau pembayaran masuk.</li>
+        </ul>
+      </div>
+
+      <h3>Batasan lain yang perlu Anda tahu di muka</h3>
+      <div class="scroller"><table>
+        <thead><tr><th>Batasan</th><th>Dampak</th><th>Penanganan</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Kuota guest</td>
+            <td>Notion membatasi jumlah guest sesuai paket — kisarannya 10 di Free dan 100 di Plus. Tiap client memakai satu kuota.</td>
+            <td>Cek angka pastinya di Settings &amp; Members. Cabut akses guest saat project diarsipkan agar kuota berputar.</td>
+          </tr>
+          <tr>
+            <td>Client wajib punya akun Notion</td>
+            <td>Guest harus mendaftar akun gratis untuk membuka portal. Sebagian client akan menganggap ini merepotkan.</td>
+            <td>Sediakan panduan satu halaman. Alternatifnya di baris berikut.</td>
+          </tr>
+          <tr>
+            <td>Alternatif tautan publik</td>
+            <td><em>Share to web</em> menghapus kebutuhan akun, tapi <strong>siapa pun yang memegang tautan bisa membuka</strong>. Kalau client meneruskannya, isinya ikut terbuka.</td>
+            <td>Hanya untuk client yang menolak membuat akun, dan hanya untuk portal tanpa informasi sensitif. Matikan pengindeksan mesin pencari. Proteksi kata sandi butuh paket berbayar Notion Sites.</td>
+          </tr>
+          <tr>
+            <td>Synced block tidak menolong</td>
+            <td>Blok tersinkron hanya tampil bagi orang yang punya akses ke halaman asalnya. Bagi client isinya kosong.</td>
+            <td>Tidak dipakai. Portal memakai blok biasa.</td>
+          </tr>
+          <tr>
+            <td>Komentar terlihat sesama guest</td>
+            <td>Kalau dua client tanpa sengaja diundang ke halaman yang sama, keduanya saling melihat komentar.</td>
+            <td>Satu portal satu client. Tidak pernah ada portal bersama.</td>
+          </tr>
+          <tr>
+            <td>Riwayat versi</td>
+            <td>Guest dengan izin <em>Can view</em> tidak bisa membuka riwayat halaman, jadi teks yang pernah dihapus tidak bisa mereka gali.</td>
+            <td>Tetap berlaku disiplin: jangan pernah mengetik angka internal di halaman portal, sekalipun untuk sesaat.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="note risk">
+        <span class="lbl">Kalau kerahasiaan finansial bersifat mutlak</span>
+        <p>Kalau suatu saat studio menangani client yang menuntut jaminan isolasi setingkat perbankan, jawaban jujurnya: Notion bukan alatnya, seberapa pun rapi penataannya. Yang dibutuhkan adalah aplikasi portal tersendiri dengan autentikasi dan otorisasi tingkat baris. Untuk skala studio arsitektur — belasan sampai puluhan project aktif — rancangan di atas sudah memadai, asalkan aturan “client tidak pernah menyentuh database” dipatuhi tanpa pengecualian.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 08 ================= -->
+  <section id="s08">
+    <div class="sec-head">
+      <span class="num">08</span>
+      <h2>Automasi</h2>
+      <p class="sub">Tiga lapis, dari yang paling andal ke yang paling bergantung paket. Saya pisahkan supaya jelas mana yang bisa saya bangun sendiri dan mana yang butuh beberapa menit klik di Notion.</p>
+    </div>
+
+    <div class="body-col">
+      <h3>Lapis 1 — Formula &amp; rollup <span class="chip chip-rel">bisa saya bangun</span></h3>
+      <p>Berjalan di semua paket, tidak pernah gagal, tidak perlu pemicu. Semua penjumlahan uang, HPP, profit, margin, progress, penanda terlambat, dan penanda proposal kadaluarsa masuk lapis ini. Bagian terbesar dari yang Anda sebut “automasi” sebenarnya selesai di sini.</p>
+
+      <h3>Lapis 2 — Automasi database Notion <span class="chip chip-r">setup manual</span></h3>
+      <div class="note caut">
+        <span class="lbl">Keterbatasan alat</span>
+        <p>Automasi database dan tombol Notion <strong>tidak bisa dibuat lewat API atau MCP</strong> — daftar tool yang tersedia pada koneksi ini tidak memuatnya. Saya bisa menyiapkan seluruh strukturnya dan menuliskan langkah kliknya satu per satu, tapi tombol terakhirnya harus Anda tekan sendiri di Notion. Perkiraan waktu: 15–20 menit untuk semuanya.</p>
+      </div>
+      <div class="scroller"><table>
+        <thead><tr><th>Pemicu</th><th>Tindakan</th><th>Catatan</th></tr></thead>
+        <tbody>
+          <tr><td>PROPOSALS status → <em>Disetujui</em></td><td>Buat baris INVOICES jenis DP; set Status Project → <em>Menunggu DP</em></td><td>Sesuai permintaan Anda, ini <strong>menyiapkan</strong> invoice sebagai Draft, tidak langsung mengirim.</td></tr>
+          <tr><td>INVOICES status → <em>Dibayar</em></td><td>Isi Tanggal Pembayaran; buat baris FINANCE TRANSACTIONS</td><td></td></tr>
+          <tr><td>INVOICES jenis DP → <em>Dibayar</em></td><td>Status Project → <em>DP Dibayar</em></td><td>Gerbang menuju Design 1.</td></tr>
+          <tr><td>INVOICES jenis Pelunasan → <em>Dibayar</em></td><td>Status Project → <em>Design 2</em></td><td>Gerbang menuju Design 2.</td></tr>
+          <tr><td>DESIGN PROGRESS <em>Approved</em> dicentang</td><td>Progress % → 100; isi tanggal approval</td><td></td></tr>
+          <tr><td>Tombol <em>Buat 14 Tahap Desain</em></td><td>Membuat 14 baris DESIGN PROGRESS sekaligus</td><td>Menghemat pekerjaan paling membosankan saat project baru dibuka.</td></tr>
+          <tr><td>Tombol <em>Buat Invoice DP</em></td><td>Membuat invoice dari data project</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.9rem;color:var(--ink-3)">Automasi database Notion adalah fitur paket berbayar. Kalau workspace ini masih Free, seluruh lapis 2 diganti tombol manual sederhana dan checklist — sistemnya tetap jalan penuh, hanya butuh beberapa klik tambahan. Ini yang perlu dipastikan lewat pengecekan paket.</p>
+
+      <h3>Lapis 3 — Sinkronisasi oleh agen <span class="chip chip-f">lewat koneksi ini</span></h3>
+      <p>Yang tidak bisa dilakukan Notion sendiri, bisa dilakukan lewat koneksi MCP yang sekarang aktif, dijadwalkan berkala:</p>
+      <ul style="padding-left:1.15rem;max-width:var(--measure);font-size:.95rem">
+        <li><strong>Sinkron Client Portal</strong> — membaca progress, status, dokumen ber-<em>Siap Portal</em>, dan status pembayaran, lalu menulis ulang isi tiap portal. Inilah yang membuat portal terasa hidup tanpa membuka database ke client.</li>
+        <li><strong>Sapuan invoice terlambat</strong> — memeriksa jatuh tempo tiap pagi dan menandai yang lewat.</li>
+        <li><strong>Ringkasan harian</strong> — project terlambat, DP yang ditunggu, lead yang perlu di-follow up, margin yang jatuh di bawah target.</li>
+        <li><strong>Pengingat follow up lead</strong> — lead yang didiamkan lebih dari sekian hari.</li>
+      </ul>
+
+      <div class="note">
+        <span class="lbl">Batas yang saya jaga</span>
+        <p>Sesuai permintaan Anda di Bagian 28: automasi tidak akan pernah mengubah nilai fee, menghapus baris, mengirim invoice ke client, atau menandai pembayaran lunas atas inisiatif sendiri. Perubahan bernilai uang selalu lewat konfirmasi manusia. Yang otomatis hanyalah menghitung, menandai, dan menyalin ke portal.</p>
+      </div>
+
+      <h3>Dashboard</h3>
+      <div class="scroller"><table>
+        <thead><tr><th>Dashboard</th><th>Isi</th></tr></thead>
+        <tbody>
+          <tr><td>Management</td><td>Total project · aktif · selesai · terlambat · menunggu DP · menunggu pelunasan · revenue · outstanding · pengeluaran · HPP · fee team · profit · rata-rata margin · sebaran Status Margin</td></tr>
+          <tr><td>Finance</td><td>Uang masuk · uang keluar · total DP · total pelunasan · outstanding · fee team · expense · profit · rata-rata margin · arus kas bulanan</td></tr>
+          <tr><td>Team</td><td>Project aktif per orang · beban kerja · deadline terdekat · task terlambat · design progress · fee pending · fee terbayar</td></tr>
+          <tr><td>KPI</td><td>Average contract value · jumlah project · project premium · lead aktif · revenue · profit · margin · partnership · cash reserve — tiap target disimpan sebagai properti angka, bukan ditanam di rumus, supaya manajemen bisa menggesernya kapan saja</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ================= 09 ================= -->
+  <section id="s09">
+    <div class="sec-head">
+      <span class="num">09</span>
+      <h2>Yang perlu Anda putuskan</h2>
+      <p class="sub">Tahap 3. Enam pertanyaan ini menentukan bentuk akhir sistem. Empat pertama saya tanyakan langsung di chat; dua terakhir bisa dijawab belakangan.</p>
+    </div>
+
+    <div class="body-col">
+      <ol style="padding-left:1.2rem;max-width:var(--measure);font-size:.95rem">
+        <li><strong>Workspace sudah benar?</strong> Sistem akan dibangun di <em>Pahlevi Dirga Design Architecture’s Space</em> atas akun <code>pahlevidirgadesign@gmail.com</code>. Kalau ada workspace lain yang Anda maksud, hentikan saya sekarang.</li>
+        <li><strong>Sekaligus atau bertahap?</strong> Membangun 13 database sekaligus, atau mulai dari inti (Clients, Projects, Team, Project Team, Invoices, Design Progress) supaya bisa dicoba lebih cepat sebelum sisanya menyusul.</li>
+        <li><strong>Cara client membuka portal.</strong> Guest Notion (aman, client perlu akun) atau tautan publik (gampang, siapa pun pemegang tautan bisa membuka). Bisa berbeda per client.</li>
+        <li><strong>Data Excel ikut dipindahkan?</strong> Kalau ya, kirimkan file <em>List Project</em> dan <em>Keluar Masuk</em> — saya petakan ke struktur baru. Kalau belum, sistem diisi data test dulu.</li>
+        <li><strong>Paket Notion.</strong> Cek di Settings &amp; Members → Plans. Menentukan kuota guest dan tersedianya automasi lapis 2.</li>
+        <li><strong>Nama studio untuk portal.</strong> Teks persis yang muncul di kepala tiap Client Portal.</li>
+      </ol>
+
+      <div class="note good">
+        <span class="lbl">Rencana pengujian setelah dibangun</span>
+        <p>Sesuai Bagian 46–47, sistem tidak dinyatakan selesai sebelum lolos ini:</p>
+        <ul>
+          <li><strong>Uji alur</strong> — Client A · Test Coffee Shop A · fee Rp50.000.000 · DP 50/50 · Leader, Drafter 10%, Render 5%, Estimator · Brief &amp; Proposal selesai · DP dibayar · Denah &amp; Tampak selesai · 3D berjalan · Render belum mulai. Diverifikasi: DP Rp25.000.000, fee Drafter Rp5.000.000, fee Render Rp2.500.000, HPP, profit, margin, dan angka progress semuanya terhitung sendiri.</li>
+          <li><strong>Uji skema alternatif</strong> — ubah ke DP 40/60 dan pastikan semua angka ikut menyesuaikan tanpa ada yang perlu diketik ulang.</li>
+          <li><strong>Uji keamanan</strong> — buat Client B dan Project B, lalu periksa delapan hal dari daftar Anda: apakah Client A bisa melihat Client B, Project B, Finance, HPP, Fee Team, Profit, Internal Notes, dan apakah dokumen yang muncul hanya yang ber-<em>Client Visible</em>. Pengujian dilakukan dari sisi guest sungguhan, bukan dari akun owner — hasilnya saya laporkan apa adanya.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 10 ================= -->
+  <section id="s10">
+    <div class="sec-head">
+      <span class="num">10</span>
+      <h2>Rencana pembangunan</h2>
+      <p class="sub">Tahap 4 sampai 11. Urutannya tidak bisa ditukar: rollup mustahil dibuat sebelum relasinya ada, dan formula mustahil sebelum rollup-nya ada.</p>
+    </div>
+
+    <div class="body-col">
+      <div class="phases">
+        <div class="phase"><span class="pn">04</span><span class="pt">Bangun 13 database beserta properti dasar<small>Lewat MCP. Halaman induk STUDIO OS dibuat lebih dulu.</small></span><span class="pd">± 25 mnt</span></div>
+        <div class="phase"><span class="pn">05</span><span class="pt">Pasang seluruh relasi antar database<small>Dua arah, agar data mengalir ke kedua sisi.</small></span><span class="pd">± 15 mnt</span></div>
+        <div class="phase"><span class="pn">06</span><span class="pt">Tambahkan rollup, lalu formula<small>Rollup dulu — formula membacanya.</small></span><span class="pd">± 25 mnt</span></div>
+        <div class="phase"><span class="pn">07</span><span class="pt">Buat view per database<small>Board status project, invoice terlambat, fee pending, dan seterusnya.</small></span><span class="pd">± 15 mnt</span></div>
+        <div class="phase"><span class="pn">08</span><span class="pt">Susun template<small>Halaman blueprint yang diduplikasi. Template database bawaan perlu 10 menit setup manual.</small></span><span class="pd">± 20 mnt</span></div>
+        <div class="phase"><span class="pn">09</span><span class="pt">Rakit empat dashboard<small>Management · Finance · Team · KPI.</small></span><span class="pd">± 20 mnt</span></div>
+        <div class="phase"><span class="pn">10</span><span class="pt">Bangun Client Portal + template portal<small>Termasuk skrip sinkronisasi.</small></span><span class="pd">± 25 mnt</span></div>
+        <div class="phase"><span class="pn">11</span><span class="pt">Automasi + pengujian penuh<small>Panduan klik untuk lapis 2, lalu uji alur, uji skema, dan uji keamanan.</small></span><span class="pd">± 30 mnt</span></div>
+      </div>
+
+      <p style="margin-top:1.5rem"><strong>Setelah semua selesai</strong>, laporan penutup akan memuat: daftar database yang dibuat, penjelasan relasi, formula penting, automasi yang aktif beserta yang butuh setup manual, pengalaman client di portal, perhitungan revenue–cost–profit–margin, sistem fee team, cara client dipisahkan berikut batasannya, hasil pengujian apa adanya, dan langkah pengembangan berikutnya.</p>
+
+      <div class="note">
+        <span class="lbl">Setelah sistem berjalan</span>
+        <ul>
+          <li>Pindahkan data project berjalan dari Excel, lalu hentikan pemakaian sheet lama agar tidak ada dua sumber kebenaran.</li>
+          <li>Kalibrasi bobot tahap desain memakai project sungguhan — angka progress baru jujur setelah bobotnya mencerminkan beban kerja nyata.</li>
+          <li>Setelah 8–10 project selesai, HPP rata-rata per jenis project bisa dihitung. Dari situ penetapan harga Coffee Shop dan rumah tinggal berhenti menjadi tebakan.</li>
+          <li>Tambahkan RAB dan library material hanya kalau memang dibutuhkan — jumlah database sengaja ditahan di 13.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Tahap 1–2 selesai</span>
+    <span>Tahap 3 menunggu konfirmasi</span>
+    <span>Perubahan di Notion: nihil</span>
+    <span>Diaudit 15 Agustus 2026</span>
+  </footer>
+
+</div>
