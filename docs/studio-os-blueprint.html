@@ -517,16 +517,16 @@
 <div class="sheet">
 
   <header class="titleblock">
-    <p class="eyebrow">Tahap 1 &amp; 2 — Audit dan Rancangan</p>
+    <p class="eyebrow">Audit · Rancangan · Hasil Pembangunan</p>
     <h1>Sistem Operasional Studio Arsitektur di Notion</h1>
-    <p class="lede">Dokumen ini menyelesaikan dua tahap pertama: hasil audit workspace Notion apa adanya, dan rancangan lengkap sistem yang akan dibangun. Belum ada satu pun perubahan yang dilakukan di Notion. Pembangunan menunggu konfirmasi Anda di Bagian&nbsp;09.</p>
+    <p class="lede">Hasil audit workspace apa adanya, rancangan lengkap sistem, dan catatan pembangunan inti yang sudah berjalan di Notion. Tujuh database berdiri dengan relasi, rollup, dan formula terpasang, berikut data uji. Satu hal belum tuntas dan dijelaskan terbuka di Bagian&nbsp;11: angka hasil formula tidak bisa saya baca sendiri, jadi perlu Anda cek sekali di layar.</p>
     <div class="meta">
       <div><span class="k">Workspace</span><span class="v">Pahlevi Dirga Design Architecture’s Space</span></div>
       <div><span class="k">Akun terhubung</span><span class="v">pahlevidirgadesign@gmail.com</span></div>
       <div><span class="k">Teamspace</span><span class="v">Team HQ — Owner</span></div>
       <div><span class="k">Tanggal audit</span><span class="v">15 Agustus 2026</span></div>
-      <div><span class="k">Status</span><span class="v" style="color:var(--caut)">Menunggu Konfirmasi</span></div>
-      <div><span class="k">Perubahan dilakukan</span><span class="v" style="color:var(--ok)">Nihil — read only</span></div>
+      <div><span class="k">Status</span><span class="v" style="color:var(--caut)">Inti terbangun — perlu verifikasi</span></div>
+      <div><span class="k">Database dibuat</span><span class="v" style="color:var(--ok)">7 baru · 5 lama utuh</span></div>
     </div>
   </header>
 
@@ -542,6 +542,7 @@
       <li><a href="#s08"><span class="n">08</span> Automasi</a></li>
       <li><a href="#s09"><span class="n">09</span> Yang Perlu Diputuskan</a></li>
       <li><a href="#s10"><span class="n">10</span> Rencana Pembangunan</a></li>
+      <li><a href="#s11"><span class="n">11</span> Hasil Pembangunan</a></li>
     </ol>
   </nav>
 
@@ -1414,11 +1415,90 @@ if(and(
     </div>
   </section>
 
+  <!-- ================= 11 ================= -->
+  <section id="s11">
+    <div class="sec-head">
+      <span class="num">11</span>
+      <h2>Hasil pembangunan</h2>
+      <p class="sub">Apa yang sudah berdiri di Notion, di mana saya menyimpang dari rancangan dan mengapa, serta satu hal yang belum bisa saya pastikan sendiri.</p>
+    </div>
+
+    <div class="body-col">
+      <h3>Yang sudah berdiri</h3>
+      <p>Semuanya di dalam halaman induk <code>STUDIO OS — Internal</code>, yang tidak pernah dibagikan ke siapa pun di luar studio. Lima database bawaan Notion tidak disentuh sama sekali — tidak dihapus, tidak diubah, tidak dipindah.</p>
+      <div class="scroller"><table>
+        <thead><tr><th>Database</th><th class="num-col">Properti</th><th>Yang mengalir masuk</th></tr></thead>
+        <tbody>
+          <tr><td>CLIENTS</td><td class="num-col">15</td><td>Total nilai project, outstanding, total dibayar, jumlah project</td></tr>
+          <tr><td>PROJECTS</td><td class="num-col">38</td><td>Semua angka keuangan, HPP, profit, margin, progress — 6 rollup, 15 formula</td></tr>
+          <tr><td>TEAM MEMBERS</td><td class="num-col">14</td><td>Total fee, fee terbayar, fee pending, jumlah penugasan</td></tr>
+          <tr><td>PROJECT TEAM</td><td class="num-col">14</td><td>Fee project ditarik dari PROJECTS; total fee dihitung sendiri</td></tr>
+          <tr><td>INVOICES</td><td class="num-col">15</td><td>Fee project ditarik; nilai invoice, nilai dibayar, penanda terlambat dihitung</td></tr>
+          <tr><td>PROJECT EXPENSES</td><td class="num-col">11</td><td>Nilai HPP dihitung per baris</td></tr>
+          <tr><td>DESIGN PROGRESS</td><td class="num-col">18</td><td>Empat formula pembantu yang memisahkan Design 1 dan Design 2</td></tr>
+        </tbody>
+      </table></div>
+      <p>Enam view dibuat: <em>Keuangan Project</em>, <em>Progress Project</em>, <em>Board Status</em> pada PROJECTS; <em>Pantau Tagihan</em> pada INVOICES; <em>Urutan Tahap</em> pada DESIGN PROGRESS; <em>Fee Team</em> pada PROJECT TEAM.</p>
+
+      <h3>Data uji yang dimasukkan</h3>
+      <p>Sesuai Bagian 46–47: dua client, dua project, empat penugasan team, tiga invoice, dua pengeluaran, dan empat belas tahap desain. <code>Test Coffee Shop A</code> memakai skema DP 50/50 atas fee Rp50 juta; <code>Test Rumah Tinggal B</code> sengaja memakai <strong>DP 40/60</strong> atas fee Rp80 juta untuk membuktikan skema pembayaran benar-benar bisa diubah. Satu invoice sengaja dibuat lewat jatuh tempo untuk menguji penanda terlambat. Penomoran otomatis terbukti jalan: project terbaca <code>PRJ-1</code> dan <code>PRJ-2</code>.</p>
+
+      <div class="note risk">
+        <span class="lbl">Yang belum bisa saya pastikan</span>
+        <p>Koneksi MCP <strong>tidak pernah mengembalikan nilai kolom formula dan rollup</strong> — hanya referensi buram seperti <code>formulaResult://…</code>. Saya sudah mencoba tiga jalur: membaca halaman, query SQL, dan query lewat view. Ketiganya menutup kolom hasil hitungan.</p>
+        <p>Artinya saya bisa memastikan struktur, tapi <strong>tidak bisa memastikan angkanya</strong>. Yang terbukti: Notion menerima setiap formula lewat pemeriksa tipenya — dan pemeriksa itu memang ketat, karena sempat menolak dua formula saya di awal. Relasi dan rollup juga terbukti menunjuk properti yang benar. Tapi apakah <em>Nilai DP</em> benar-benar menampilkan Rp25.000.000, itu harus dilihat sendiri.</p>
+        <p>Karena itu saya tulis <strong>daftar angka harapan langsung di halaman STUDIO OS</strong>. Buka view <em>Keuangan Project</em>, bandingkan dengan daftar itu. Kalau ada satu yang meleset, sebutkan kolomnya — formulanya bisa diperbaiki tanpa menyentuh data.</p>
+      </div>
+
+      <h3>Di mana saya menyimpang dari rancangan</h3>
+      <div class="scroller"><table>
+        <thead><tr><th>Penyimpangan</th><th>Alasan</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>PROJECT EXPENSES ikut dibangun, padahal bukan bagian dari enam database inti</td>
+            <td>Tanpanya HPP hanya menghitung fee team, dan angka profit serta margin jadi menyesatkan sejak hari pertama. Menambahkannya lebih baik daripada menyajikan angka yang salah.</td>
+          </tr>
+          <tr>
+            <td>Checkbox HPP dibalik menjadi <code>Kecualikan dari HPP</code>, bukan <code>Masuk HPP</code></td>
+            <td>Notion tidak bisa memberi nilai awal tercentang pada checkbox. Kalau memakai <em>Masuk HPP</em>, tiap biaya baru akan otomatis terlempar keluar dari HPP dan angkanya diam-diam salah. Versi terbalik membuat perilaku default-nya benar.</td>
+          </tr>
+          <tr>
+            <td>Di CLIENTS, <em>Total Dibayar</em> dihitung sebagai total nilai dikurangi outstanding</td>
+            <td>Cara langsungnya adalah rollup atas rollup, dan Notion tidak dapat diandalkan untuk itu. Hasil pengurangan ini persis sama nilainya tapi selalu terhitung.</td>
+          </tr>
+          <tr>
+            <td>Fee terbayar dan fee pending dihitung dari status di PROJECT TEAM</td>
+            <td>Database TEAM PAYMENTS belum dibangun. Ini membuat Team Dashboard sudah bisa jalan sekarang; saat TEAM PAYMENTS masuk, dua formula ini diganti rollup tanpa mengubah apa pun di tempat lain.</td>
+          </tr>
+          <tr>
+            <td>Status Project memakai tipe Select, bukan Status</td>
+            <td>Lima belas tahap khusus studio hanya bisa dibuat lewat Select. Tipe Status Notion memaksa pengelompokan bawaannya sendiri.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="note caut">
+        <span class="lbl">Catatan teknis untuk pembangunan berikutnya</span>
+        <p>Formula yang membaca rollup <strong>tidak bisa dibuat dalam satu perintah bersama rollup-nya</strong> — pemeriksa tipe Notion menolaknya karena rollup belum ada saat formula divalidasi. Urutannya wajib berlapis: relasi dulu, lalu rollup, lalu formula, lalu formula yang membaca formula. Enam database sisanya nanti mengikuti urutan yang sama.</p>
+      </div>
+
+      <h3>Yang masih tersisa</h3>
+      <ul class="check">
+        <li><span class="bx">1</span> <strong>Verifikasi angka</strong> — Anda, sekali buka layar. Ini yang paling menentukan.</li>
+        <li><span class="bx">2</span> <strong>Enam database sisanya</strong> — PROPOSALS, FINANCE TRANSACTIONS, TEAM PAYMENTS, PROJECT DOCUMENTS, TASKS &amp; MILESTONES, LEADS.</li>
+        <li><span class="bx">3</span> <strong>Client Portal</strong> — halaman induk, template portal, dan skrip sinkronisasi.</li>
+        <li><span class="bx">4</span> <strong>Empat dashboard</strong> — Management, Finance, Team, KPI.</li>
+        <li><span class="bx">5</span> <strong>Automasi lapis 2</strong> — panduan klik, ±15 menit di sisi Anda, setelah paket Notion dipastikan.</li>
+        <li><span class="bx">6</span> <strong>Hapus data uji</strong> — setelah verifikasi lolos.</li>
+      </ul>
+    </div>
+  </section>
+
   <footer>
-    <span>Tahap 1–2 selesai</span>
-    <span>Tahap 3 menunggu konfirmasi</span>
-    <span>Perubahan di Notion: nihil</span>
-    <span>Diaudit 15 Agustus 2026</span>
+    <span>Inti terbangun: 7 database</span>
+    <span>Database lama: utuh, tidak disentuh</span>
+    <span>Angka perlu diverifikasi di layar</span>
+    <span>15 Agustus 2026</span>
   </footer>
 
 </div>
