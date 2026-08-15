@@ -154,3 +154,43 @@ bertahap yang terbukti menjaga urutan.
 membuang database `Programme & Deliverables`. Data sourcenya selamat dengan 9 baris utuh,
 jadi dipasang ulang sebagai linked view ke sumber yang sama. Pelajaran: flag itu hanya
 boleh dipakai kalau setiap database dan sub-halaman ikut disebut di konten baru.
+
+---
+
+## Lanjutan — STUDIO OS lengkap 13 database + 4 dashboard
+
+Prompt awal meminta sistem operasional studio penuh. Sebelumnya baru 7 database inti
+yang berdiri. Sekarang lengkap 13, dan alur uangnya tersambung ujung ke ujung.
+
+**Enam database yang baru ditambahkan**
+
+| Database | Relasi keluar |
+| --- | --- |
+| PROPOSALS | Client, Project |
+| FINANCE TRANSACTIONS | Project, Invoice, Team Member |
+| TEAM PAYMENTS | Project, Team Member, Penugasan |
+| PROJECT DOCUMENTS | Project |
+| TASKS & MILESTONES | Project, PIC |
+| LEADS | Client |
+
+Formula bawaan tiap database: `Nilai DP` dan `Kadaluarsa` di PROPOSALS · `Nett` di
+FINANCE TRANSACTIONS · `Nilai Terbayar` di TEAM PAYMENTS · `Siap Portal` di PROJECT
+DOCUMENTS · `Terlambat` di TASKS · `Umur Lead` dan `Perlu Follow Up` di LEADS.
+
+**Lima rollup baru di PROJECTS** menutup lingkaran keuangan: `Kas Masuk`, `Kas Keluar`,
+`Fee Team Dibayar`, `Jumlah Dokumen`, `Jumlah Task`.
+
+**Empat dashboard** dengan total 12 linked view:
+
+| Dashboard | View |
+| --- | --- |
+| Management | Status Semua Project (board) · Profit & Margin · Tagihan Menggantung |
+| Finance | Keluar Masuk · Tagihan ke Client · Pengeluaran Project · Pembayaran ke Team |
+| Team | Beban Kerja Team · Fee per Penugasan · Task Berjalan (board) |
+| KPI | Tabel target · Pipeline Lead (board) · Profitabilitas Project |
+
+**Catatan teknis:** linked view tidak bisa dibuat lewat markdown `<database
+data-source-url=...>` saat membuat halaman baru — API menolak dengan "Data source not
+found". Jalur yang berhasil adalah `create-view` dengan `parent_page_id`. Dan `<page
+url=...>` tidak boleh dipakai untuk menyebut halaman yang sudah jadi anak; gunakan
+`<mention-page>`.
