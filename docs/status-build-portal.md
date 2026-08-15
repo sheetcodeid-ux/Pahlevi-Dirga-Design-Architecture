@@ -104,3 +104,53 @@ tampil persis seperti di PDF dan lebih bersih.
   memisahkan mana replika dan mana tambahan yang diminta client
 - Bahasa portal: sekarang **Inggris**, mengikuti referensi. Client studio berbahasa
   Indonesia — satu perintah untuk menerjemahkan seluruh portal
+
+---
+
+## Revisi — emoji, navigasi, cover
+
+**Emoji dihapus seluruhnya.** Semua icon halaman dan icon callout sekarang memakai icon
+garis bawaan Notion lewat format `/icons/<nama>_<warna>.svg`. Nama icon diverifikasi
+satu per satu terhadap `notion.so/icons/` sebelum dipakai — API memang menolak nama yang
+tidak ada, jadi tidak akan ada icon kosong.
+
+| Halaman | Icon |
+| --- | --- |
+| Portal Hub | `square_green` |
+| Portal Template | `circle_green` |
+| Introduction · Meetings | `people_gray` |
+| Brief | `document_gray` |
+| Contract | `pencil_gray` |
+| Billing | `credit-card_gray` |
+| Directory | `book_gray` |
+| Feedback | `chat_gray` |
+| Resources | `snippet_gray` |
+| Provide a Review | `thumbs-up_gray` |
+
+Icon kartu Our Journey: `people` · `pencil` · `compass` · `ruler` · `document` ·
+`wrench` · `key` · `home`. Callout deskripsi memakai `reference_gray`, icon ⓘ milik Notion.
+
+**Navigasi dipindah keluar kolom.** Tujuh sub-halaman sekarang jadi blok halaman di level
+halaman, di bawah heading `Navigation`, bukan di dalam kolom kanan. Ini juga yang membuat
+ketujuhnya bersarang benar di sidebar Notion.
+
+**Cover dipasang otomatis.** Notion hanya menerima URL eksternal untuk cover, bukan file
+upload. Karena repo ini publik, kesembilan cover di-commit ke `assets/` lalu dipasang
+lewat `raw.githubusercontent.com`. Delapan gambar angka tahap juga dipindah ke sana, jadi
+tidak lagi bergantung pada URL S3 Notion yang kedaluwarsa. Tidak ada upload manual.
+
+**Semua database dibuat inline** — tampil sebagai tabel di halaman, bukan tautan sub-halaman.
+
+---
+
+## Dua bug yang ditemukan saat verifikasi
+
+**Urutan blok terbalik.** `replace_content` dengan banyak blok sekaligus menyimpan blok
+dalam urutan terbalik — heading `Programme & Deliverables` naik ke atas, kartu 04–07
+mendahului 00–03. Solusinya: `replace_content` seminimal mungkin, lalu `insert_content`
+bertahap yang terbukti menjaga urutan.
+
+**Database ikut terhapus.** `allow_deleting_content: true` pada `replace_content` ikut
+membuang database `Programme & Deliverables`. Data sourcenya selamat dengan 9 baris utuh,
+jadi dipasang ulang sebagai linked view ke sumber yang sama. Pelajaran: flag itu hanya
+boleh dipakai kalau setiap database dan sub-halaman ikut disebut di konten baru.
