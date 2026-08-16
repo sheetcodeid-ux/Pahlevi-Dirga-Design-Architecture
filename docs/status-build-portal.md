@@ -194,3 +194,42 @@ data-source-url=...>` saat membuat halaman baru — API menolak dengan "Data sou
 found". Jalur yang berhasil adalah `create-view` dengan `parent_page_id`. Dan `<page
 url=...>` tidak boleh dipakai untuk menyebut halaman yang sudah jadi anak; gunakan
 `<mention-page>`.
+
+---
+
+## Penyesuaian untuk paket Free
+
+Paket workspace dikonfirmasi **Free**. Automasi database hanya ada di paket berbayar,
+jadi lapisan itu diganti dengan yang berjalan penuh di Free: **formula dan view
+terfilter**. Sistem tidak mengubah data sendiri, tapi memberi tahu apa yang harus diubah.
+
+**Formula `Langkah Berikutnya` di PROJECTS** membaca Status Project, progress desain, dan
+sisa tagihan, lalu menuliskan tindakan berikutnya per baris:
+
+| Status | Yang ditulis |
+| --- | --- |
+| Lead | → Catat brief client |
+| Brief | → Susun proposal |
+| Proposal · Negosiasi | → Tunggu keputusan client, follow up berkala |
+| Deal | → Buat Invoice DP |
+| Menunggu DP | 💰 Tagih DP, jangan mulai desain dulu |
+| DP Dibayar | → Mulai Design 1, buat 14 tahap |
+| Design 1 · Design 2 | → berjalan sekian persen |
+| Menunggu Approval | → Kejar approval client |
+| Menunggu Pelunasan | 💰 Tagih pelunasan, tahan Design 2 |
+| Final Review | → Serahkan deliverables |
+| Selesai | → Minta ulasan, atau ⚠ kalau masih ada sisa tagihan |
+
+Ditambah `Fee Team Belum Dibayar` = total hak team dikurangi yang sudah dibayar.
+
+**Halaman PUSAT TINDAKAN** berisi rutinitas harian dan mingguan sebagai checklist, tabel
+pemicu-dan-tindakan yang menggantikan tiap automasi, serta lima view: Project — Langkah
+Berikutnya, Invoice Belum Dibayar, Lead Perlu Follow Up, Task Terlambat, Proposal
+Menggantung.
+
+### Tiga batas Free yang dicatat di halaman itu
+
+- **Upload maksimal 5 MB.** Render, DED, dan PDF besar tidak boleh masuk Notion — pakai
+  kolom `Link Eksternal` di PROJECT DOCUMENTS yang menunjuk ke Google Drive.
+- **Kuota guest terbatas.** Cabut akses guest saat project diarsipkan agar kuota berputar.
+- **Riwayat versi 7 hari.** Untuk data keuangan, simpan salinan bulanan di luar Notion.
