@@ -345,7 +345,7 @@ Kartu `Stage 1 Design Review Minutes` · tag `Meeting Minutes` **hijau**
 | Unsur | Nilai |
 | --- | --- |
 | Mode | Gelap. Ada tombol `Switch to Dark/Light Mode` di Portal Hub |
-| Cover halaman | Krem terang, wordmark hitam rata kanan, huruf besar rapat |
+| Cover halaman | Referensi: krem terang, wordmark hitam rata kanan. **Kita pakai hitam** — lihat catatan di bawah |
 | Heading section | Merah koral + garis horizontal tipis |
 | Callout netral | Abu gelap |
 | Callout berwarna | Tiga fase desain · Document Vault & Key Milestones cokelat · Complete hijau · Google Review merah gelap |
@@ -353,6 +353,14 @@ Kartu `Stage 1 Design Review Minutes` · tag `Meeting Minutes` **hijau**
 | Tahap akhir `07` | Putih/krem |
 | Icon | Icon garis Notion, bukan emoji |
 | Teks kartu | Italic |
+
+### Penyimpangan yang disengaja dari referensi
+
+**Cover halaman: hitam, bukan krem.** Referensi memakai cover krem. Client meminta
+hitam karena di mode gelap cover krem terbaca sebagai lempengan terang yang
+memotong halaman. Sembilan cover dibuat ulang dengan latar `#090909` dan wordmark
+krem rata kanan. Ini keputusan client, bukan kekeliruan pembacaan referensi —
+jangan dikembalikan ke krem tanpa instruksi baru.
 
 ---
 
